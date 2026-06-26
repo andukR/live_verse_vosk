@@ -8,7 +8,6 @@ const status = document.querySelector("#status");
 const approve = document.querySelector("#approve");
 const reject = document.querySelector("#reject");
 const manualRef = document.querySelector("#manualRef");
-const manualApply = document.querySelector("#manualApply");
 const manualStatus = document.querySelector("#manualStatus");
 const bookNames = document.querySelector("#bookNames");
 const bookSuggestions = document.querySelector("#bookSuggestions");
@@ -19,8 +18,6 @@ const pickedReference = document.querySelector("#pickedReference");
 const bookStep = document.querySelector("#bookStep");
 const chapterStep = document.querySelector("#chapterStep");
 const verseStep = document.querySelector("#verseStep");
-const rangeClear = document.querySelector("#rangeClear");
-const rangeApply = document.querySelector("#rangeApply");
 const pipelineStage = document.querySelector("#pipelineStage");
 const pipelineProgress = document.querySelector("#pipelineProgress");
 const pipelineMessage = document.querySelector("#pipelineMessage");
@@ -28,6 +25,7 @@ const manualHint = document.querySelector("#manualHint");
 const manualCard = document.querySelector("#manualCard");
 let books = [];
 let bibleStructure = {};
+let applyPickTimer = null;
 const rangePick = {
   book: "",
   chapter: null,
@@ -229,6 +227,7 @@ function chooseVerse(verse) {
   }
   renderVersesGrid();
   updatePickedReference();
+  scheduleApplyPickedReference();
 }
 
 function renderVersesGrid() {
@@ -243,23 +242,14 @@ function renderVersesGrid() {
   });
 }
 
-function resetRangePick() {
-  rangePick.book = "";
-  rangePick.chapter = null;
-  rangePick.startVerse = null;
-  rangePick.endVerse = null;
-  manualRef.value = "";
-  renderBooksGrid();
-  chapterGrid.replaceChildren();
-  verseGrid.replaceChildren();
-  updatePickedReference();
-  setStep("book");
+function scheduleApplyPickedReference() {
+  window.clearTimeout(applyPickTimer);
+  applyPickTimer = window.setTimeout(applyPickedReference, 250);
 }
 
-function applyRangePick() {
+function applyPickedReference() {
   const value = referenceFromPick();
   if (!value) {
-    manualStatus.textContent = "Выберите книгу, главу и стих";
     return;
   }
   manualRef.value = value;
@@ -290,7 +280,6 @@ async function applyManualReference() {
     manualStatus.textContent = "Введите книгу, главу и стих";
     return;
   }
-  manualApply.disabled = true;
   manualStatus.textContent = "Проверяю ссылку…";
   try {
     const response = await fetch("/api/manual", {
@@ -304,8 +293,6 @@ async function applyManualReference() {
     manualStatus.textContent = "Цитата подставлена. Проверьте и нажмите «Принять».";
   } catch (error) {
     manualStatus.textContent = `Ошибка: ${error.message}`;
-  } finally {
-    manualApply.disabled = false;
   }
 }
 
@@ -313,9 +300,6 @@ manualRef.addEventListener("input", renderBookSuggestions);
 manualRef.addEventListener("keydown", (event) => {
   if (event.key === "Enter") applyManualReference();
 });
-manualApply.addEventListener("click", applyManualReference);
-rangeClear.addEventListener("click", resetRangePick);
-rangeApply.addEventListener("click", applyRangePick);
 bookStep.addEventListener("click", () => setStep("book"));
 chapterStep.addEventListener("click", () => {
   if (rangePick.book) setStep("chapter");

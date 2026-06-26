@@ -26,7 +26,6 @@ button:disabled { opacity: .5; }
 .manual label { display: block; margin: 12px 0 7px; color: #c5d0da; }
 .manual.attention { border-color: #d9a83d; box-shadow: 0 0 0 2px #d9a83d55, 0 14px 40px #0005; }
 .manual input { width: 100%; min-height: 58px; border: 1px solid #4a5c6e; border-radius: 12px; padding: 0 15px; background: #0e151d; color: white; font-size: 20px; }
-.manual-apply { width: 100%; min-height: 58px; margin-top: 12px; background: #315e9b; }
 .suggestions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 9px; }
 .book-suggestion { min-height: 42px; padding: 8px 12px; background: #283849; font-size: 16px; font-weight: 600; }
 .range-picker { margin-top: 14px; padding-top: 14px; border-top: 1px solid #2b3847; }
@@ -42,10 +41,6 @@ button:disabled { opacity: .5; }
 .number-button { font-size: 19px; }
 .picker-button.selected { background: #148447; border-color: #23a660; }
 .picker-button.in-range { background: #315e9b; border-color: #4f81c4; }
-.range-actions { display: grid; grid-template-columns: 1fr 2fr; gap: 10px; margin-top: 12px; }
-.range-actions button { min-height: 50px; border-radius: 10px; font-size: 16px; }
-#rangeClear { background: #4a5c6e; }
-#rangeApply { background: #315e9b; }
 #manualStatus { min-height: 24px; margin-top: 12px; color: #c8d2dc; }
 
 @media (max-width: 460px) {
@@ -139,9 +134,5 @@ button:disabled { opacity: .5; }
   .picker-button { min-height: 34px; padding: 5px 7px; border-radius: 6px; font-size: 14px; }
   .book-button { font-size: 13px; line-height: 1.15; }
   .number-button { font-size: 16px; }
-  .range-actions { grid-template-columns: 150px 1fr; gap: 8px; margin-top: 10px; }
-  .range-actions button,
-  .manual-apply { min-height: 42px; border-radius: 8px; font-size: 15px; }
-  .manual-apply { margin-top: 8px; }
   #manualStatus { min-height: 20px; margin-top: 8px; font-size: 14px; }
 }
