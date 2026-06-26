@@ -1,7 +1,7 @@
 [project]
-name = "live-verse-vosk"
+name = "liverse"
 version = "0.1.0"
-description = "Vosk-based Bible reference probe with Holyrics integration."
+description = "Vosk-based Bible reference detection with Holyrics integration."
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
@@ -11,8 +11,7 @@ dependencies = [
 
 [project.scripts]
 liverse = "tools.vosk_grammar_probe:main"
-live-verse-vosk = "tools.vosk_grammar_probe:main"
-live-verse-vosk-analyze = "tools.analyze_vosk_probe_logs:main"
+liverse-analyze = "tools.analyze_vosk_probe_logs:main"
 
 [build-system]
 requires = ["setuptools>=68"]

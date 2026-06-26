@@ -39,7 +39,7 @@ from tools.holyrics import (
 
 
 DEFAULT_MODEL_PATH = Path.cwd() / "models" / "vosk-model-small-ru-0.22"
-DEFAULT_LOG_DIR = Path.cwd() / ".cache" / "live_verse_vosk" / "vosk_probe"
+DEFAULT_LOG_DIR = Path.cwd() / ".cache" / "liverse" / "vosk_probe"
 REFERENCE_WORDS = {
     "апостол",
     "богослова",
@@ -274,6 +274,29 @@ def likely_explicit_reference(text: str) -> bool:
     return False
 
 
+def likely_book_only_fragment(text: str) -> bool:
+    lowered = text.lower().replace("ё", "е").strip()
+    if not lowered or re.search(r"\b(глава|стих|псалом)\b", lowered):
+        return False
+    words = lowered.split()
+    if len(words) > 4:
+        return False
+    forms = {lowered}
+    if len(words) == 1 and lowered.endswith("а") and len(lowered) > 3:
+        forms.add(lowered[:-1])
+    for canonical, aliases in book_synonyms.items():
+        names = [canonical, *aliases]
+        for name in names:
+            normalized_name = name.lower().replace("ё", "е")
+            if normalized_name in forms:
+                return True
+    return False
+
+
+def same_place_only_fragment(text: str) -> bool:
+    return re.fullmatch(r"\s*там\s+же\s*", text.lower().replace("ё", "е")) is not None
+
+
 def same_place_candidates(candidates: list[str], last_parsed: dict | None) -> list[str]:
     if not last_parsed:
         return candidates
@@ -284,12 +307,13 @@ def same_place_candidates(candidates: list[str], last_parsed: dict | None) -> li
 
     expanded: list[str] = []
     for candidate in candidates:
+        expanded.append(candidate)
         if not re.search(r"\bтам\s+же\b", candidate.lower().replace("ё", "е")):
             continue
         suffix = re.sub(r"\bтам\s+же\b", "", candidate, flags=re.IGNORECASE).strip()
         if suffix:
             expanded.append(f"{book} {chapter} глава {suffix}")
-    return expanded + candidates
+    return expanded
 
 
 def parsed_payload_from_candidates(
@@ -313,7 +337,12 @@ def parsed_payload_from_candidates(
     ]
     for index, payload in enumerate(attempts):
         if payload.get("slide"):
-            if index > 0 and attempts and likely_explicit_reference(str(attempts[0].get("text") or "")):
+            first_text = str(attempts[0].get("text") or "") if attempts else ""
+            if index > 0 and (
+                likely_explicit_reference(first_text)
+                or likely_book_only_fragment(first_text)
+                or same_place_only_fragment(first_text)
+            ):
                 first_payload = attempts[0]
                 first_payload["attempts"] = attempt_summaries[1:]
                 first_payload["blocked_stale_context"] = True

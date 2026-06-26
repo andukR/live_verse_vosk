@@ -34,4 +34,4 @@ analyze:
 	fi
 
 clean:
-	rm -rf $(VENV) .cache/live_verse_vosk
+	rm -rf $(VENV) .cache/liverse .cache/live_verse_vosk

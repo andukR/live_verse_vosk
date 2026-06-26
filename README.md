@@ -8,9 +8,16 @@
 - `tools/analyze_vosk_probe_logs.py` - разбор логов распознавания.
 - `packages/bible_parser_core` - парсер библейских ссылок и данные `rst.json`.
 
-## Что нужно отдельно
+## Происхождение `rst.json`
 
-Модель Vosk не лежит в репозитории. Положите её в:
+Runtime-текст Библии в `packages/bible_parser_core/src/bible_parser_core/data/rst.json`
+основан на `bibleonline/rst`, ревизия `2de3062388a2c067bc602399bda7149eec918ceb`,
+набор `parsed66`. Подробности и команда воспроизводимой сборки описаны в
+[`docs/DATA_PROVENANCE.md`](docs/DATA_PROVENANCE.md).
+
+## Модель Vosk
+
+Репозиторий включает модель:
 
 `models/vosk-model-small-ru-0.22`
 
@@ -45,16 +52,14 @@ python3 tools/vosk_grammar_probe.py --log-audio
 
 1. Установите Python 3.10+.
 2. Распакуйте проект.
-3. Положите модель Vosk в `models\vosk-model-small-ru-0.22`.
-4. Запустите `install-windows.ps1`.
-5. Запускайте `run-live-verse-vosk.cmd`.
+3. Запустите `install-windows.ps1`.
+4. Запускайте `run-liverse.cmd`.
 
 ## Установка на Linux
 
 1. Установите Python 3.10+ и `make`.
 2. Если `python3 -m venv` не работает, поставьте пакет `python3-venv` или аналогичный для вашего дистрибутива.
-3. Положите модель Vosk в `models/vosk-model-small-ru-0.22`.
-4. Запустите:
+3. Запустите:
 
 ```bash
 ./install-linux.sh

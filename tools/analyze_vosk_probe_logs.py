@@ -9,7 +9,7 @@ from collections import Counter
 from pathlib import Path
 
 
-DEFAULT_LOG_DIR = Path(".cache/live_verse_vosk/vosk_probe")
+DEFAULT_LOG_DIR = Path(".cache/liverse/vosk_probe")
 
 
 def event_paths(log_dir: Path) -> list[Path]:
@@ -17,7 +17,10 @@ def event_paths(log_dir: Path) -> list[Path]:
         return [log_dir]
     if (log_dir / "events.jsonl").is_file():
         return [log_dir / "events.jsonl"]
-    return sorted(log_dir.glob("*/events.jsonl"))
+    paths = sorted(log_dir.glob("*/events.jsonl"))
+    if not paths and log_dir == DEFAULT_LOG_DIR:
+        paths = sorted(Path(".cache/live_verse_vosk/vosk_probe").glob("*/events.jsonl"))
+    return paths
 
 
 def iter_events(paths: list[Path]):

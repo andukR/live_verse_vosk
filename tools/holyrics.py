@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Small Holyrics local API helpers for Live Verse Vosk."""
+"""Small Holyrics local API helpers for LiVerse."""
 
 from __future__ import annotations
 
