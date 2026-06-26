@@ -31,7 +31,7 @@ button:disabled { opacity: .5; }
 .book-suggestion { min-height: 42px; padding: 8px 12px; background: #283849; font-size: 16px; font-weight: 600; }
 .range-picker { margin-top: 14px; padding-top: 14px; border-top: 1px solid #2b3847; }
 .picker-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
-.picker-tabs span { min-height: 34px; display: grid; place-items: center; border-radius: 8px; background: #263443; color: #aebdcc; font-size: 14px; font-weight: 750; }
+.picker-tabs button { min-height: 34px; display: grid; place-items: center; border-radius: 8px; background: #263443; color: #aebdcc; font-size: 14px; font-weight: 750; user-select: none; }
 .picker-tabs .active { background: #d9a83d; color: #101720; }
 .picked-reference { min-height: 44px; display: flex; align-items: center; padding: 10px 12px; border-radius: 10px; background: #101922; color: #f5ce7c; font-size: 18px; font-weight: 750; }
 .picker-grid { display: grid; gap: 8px; margin-top: 12px; }
@@ -109,7 +109,7 @@ button:disabled { opacity: .5; }
     padding-top: 10px;
   }
   .picker-tabs { gap: 6px; margin-bottom: 8px; }
-  .picker-tabs span { min-height: 30px; font-size: 13px; }
+  .picker-tabs button { min-height: 30px; font-size: 13px; }
   .picked-reference { min-height: 38px; padding: 8px 10px; font-size: 17px; }
   .picker-grid {
     flex: 1;
