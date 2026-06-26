@@ -269,17 +269,6 @@ FUZZY_NUMBER_HINTS = {
     "сор": [40],
     "пят": [5, 15, 50],
 }
-ADJACENT_ORDINAL_ASR_PAIRS = (
-    (r"перв\w*", r"втор\w*"),
-    (r"втор\w*", r"трет\w*"),
-    (r"трет\w*", r"четвер\w*"),
-    (r"четвер\w*", r"пят\w*"),
-    (r"пят\w*", r"шест\w*"),
-    (r"шест\w*", r"седьм\w*"),
-    (r"седьм\w*", r"восьм\w*"),
-    (r"восьм\w*", r"девят\w*"),
-)
-
 ASR_REPLACEMENTS = (
     (r"\bи\s+у\s*ван(?:на|ов)\b", "иоанна"),
     (r"\bи\s+уанна\b", "иоанна"),
@@ -414,12 +403,6 @@ def normalize_text(text: str) -> str:
     normalized = text.lower().replace("ё", "е")
     for pattern, replacement in ASR_REPLACEMENTS:
         normalized = re.sub(pattern, replacement, normalized, flags=re.IGNORECASE)
-    for first_ordinal, next_ordinal in ADJACENT_ORDINAL_ASR_PAIRS:
-        normalized = re.sub(
-            rf"\b({first_ordinal})\s+{next_ordinal}\s+стих\b",
-            r"\1 стих",
-            normalized,
-        )
     normalized = re.sub(
         r"\b([ivxlcdm]+)\s*,?\s+глав[аеуы]\b",
         lambda match: f"{ROMAN_NUMERALS.get(match.group(1), match.group(1))} глава",
@@ -1328,7 +1311,7 @@ def parse_live_reference(text: str, bible_path: Path = DEFAULT_BIBLE) -> ParsedR
         chapter_end = max(chapter_map)
         if start_verse < chapter_end:
             end_verse = chapter_end
-    if chapter_map and len(chapter_map) <= 5:
+    if chapter_map and len(chapter_map) <= 5 and "стих" not in normalized:
         start_verse = min(chapter_map)
         end_verse = max(chapter_map)
     if end_verse not in chapter_map:

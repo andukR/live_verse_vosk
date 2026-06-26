@@ -621,5 +621,26 @@
     "source": "manual",
     "line": 0,
     "tags": ["range", "psalm", "short_chapter", "chapter_tail", "asr_variant", "manual", "recent_fix"]
+  },
+  {
+    "text": "Псалом сто четыре третье четвёртая стих.",
+    "ref": "Псалтирь 104:3-4",
+    "source": "manual",
+    "line": 0,
+    "tags": ["range", "psalm", "asr_variant", "four", "manual", "recent_fix"]
+  },
+  {
+    "text": "Псалом сто двадцать четыре первая четвёртая стих.",
+    "ref": "Псалтирь 124:1-4",
+    "source": "manual",
+    "line": 0,
+    "tags": ["range", "psalm", "short_chapter", "four", "manual", "recent_fix"]
+  },
+  {
+    "text": "Псалом сто двадцать четыре третье четвёртая стих.",
+    "ref": "Псалтирь 124:3-4",
+    "source": "manual",
+    "line": 0,
+    "tags": ["range", "psalm", "short_chapter", "four", "manual", "recent_fix"]
   }
 ]
