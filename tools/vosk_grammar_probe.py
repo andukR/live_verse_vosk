@@ -375,7 +375,7 @@ def payload_summary(payload: dict) -> dict:
 
 
 def publish_holyrics_if_needed(args: argparse.Namespace, payload: dict) -> dict:
-    if args.slide_output == "none" or not payload.get("slide"):
+    if args.slide_output not in {"holyrics", "both"} or not payload.get("slide"):
         return {"enabled": False}
 
     ok, reason = post_holyrics_update(args, payload["slide"])
@@ -384,6 +384,66 @@ def publish_holyrics_if_needed(args: argparse.Namespace, payload: dict) -> dict:
         "ok": ok,
         "reason": reason,
         "target": describe_holyrics_target(args),
+    }
+
+
+def publish_web_if_needed(args: argparse.Namespace, payload: dict) -> dict:
+    if args.slide_output not in {"web", "both"} or not payload.get("slide"):
+        return {"enabled": False}
+    from tools.slide_server import set_current_slide
+
+    slide = set_current_slide(payload["slide"])
+    return {"enabled": True, "ok": True, "slide": slide}
+
+
+def submit_for_approval(args: argparse.Namespace, payload: dict) -> dict:
+    if not payload.get("slide"):
+        return {"enabled": False}
+    from tools.slide_server import submit_candidate
+
+    candidate = submit_candidate(payload["slide"])
+    return {"enabled": True, "ok": True, "candidate": candidate}
+
+
+def start_slide_server_if_needed(args: argparse.Namespace):
+    needs_server = args.start_slide_server or args.require_approval or args.slide_output in {"web", "both"}
+    if not needs_server:
+        return None
+
+    from tools.slide_server import set_current_slide, start_server_thread
+
+    def decision_callback(action: str, candidate: dict) -> tuple[bool, str]:
+        if action == "reject":
+            return True, ""
+
+        if args.slide_output in {"holyrics", "both"}:
+            ok, reason = post_holyrics_update(args, candidate)
+            if not ok:
+                return ok, reason
+        if args.slide_output in {"web", "both"}:
+            set_current_slide(candidate)
+        return True, ""
+
+    return start_server_thread(
+        args.slide_host,
+        args.slide_port,
+        decision_callback=decision_callback if args.require_approval else None,
+        open_qr=args.open_operator_qr,
+        open_browser=args.open_operator_browser,
+    )
+
+
+def publish_payload(args: argparse.Namespace, payload: dict) -> dict:
+    if args.require_approval:
+        return {
+            "approval": submit_for_approval(args, payload),
+            "holyrics": {"enabled": False, "reason": "waiting_for_approval"},
+            "web": {"enabled": False, "reason": "waiting_for_approval"},
+        }
+    return {
+        "approval": {"enabled": False},
+        "holyrics": publish_holyrics_if_needed(args, payload),
+        "web": publish_web_if_needed(args, payload),
     }
 
 
@@ -406,12 +466,17 @@ def run_microphone(args: argparse.Namespace) -> int:
             "vosk_buffer_parts": args.vosk_buffer_parts,
             "log_audio": args.log_audio,
             "slide_output": args.slide_output,
+            "require_approval": args.require_approval,
+            "slide_server": f"http://{args.slide_host}:{args.slide_port}" if (
+                args.start_slide_server or args.require_approval or args.slide_output in {"web", "both"}
+            ) else None,
             "holyrics_target": describe_holyrics_target(args),
             "grammar": None if grammar is None else grammar_diagnostics(grammar),
         }
     )
     if logger.run_dir:
         print(f"Vosk log: {logger.run_dir / 'events.jsonl'}")
+    start_slide_server_if_needed(args)
 
     def callback(indata, frames, time, status):
         if status:
@@ -468,7 +533,7 @@ def run_microphone(args: argparse.Namespace) -> int:
                         payload["asr"] = result
                         payload["vosk_text"] = text
                         payload["vosk_buffer"] = list(text_buffer.parts)
-                        payload["holyrics"] = publish_holyrics_if_needed(args, payload)
+                        payload["output"] = publish_payload(args, payload)
                         if payload.get("parsed"):
                             last_parsed = payload["parsed"]
                         logger.write(
@@ -478,7 +543,7 @@ def run_microphone(args: argparse.Namespace) -> int:
                                 "vosk_buffer": list(text_buffer.parts),
                                 "candidate_texts": candidate_texts,
                                 "payload": payload_summary(payload),
-                                "holyrics": payload["holyrics"],
+                                "output": payload["output"],
                             },
                         )
                         print(json.dumps(payload, ensure_ascii=False, indent=2))
@@ -520,10 +585,20 @@ def main() -> int:
     parser.add_argument("--log-audio", action="store_true", help="Save microphone audio to audio.wav in the run log.")
     parser.add_argument(
         "--slide-output",
-        choices=["holyrics", "none"],
+        choices=["holyrics", "web", "both", "none"],
         default="holyrics",
-        help="Where to send detected references. Default: holyrics.",
+        help="Where to send approved references. Default: holyrics.",
     )
+    parser.add_argument(
+        "--require-approval",
+        action="store_true",
+        help="Wait for operator approval in the phone/browser UI before sending to slide output.",
+    )
+    parser.add_argument("--start-slide-server", action="store_true", help="Start local web slide/operator server.")
+    parser.add_argument("--slide-host", default="0.0.0.0", help="Web slide server host.")
+    parser.add_argument("--slide-port", type=int, default=8765, help="Web slide server port.")
+    parser.add_argument("--open-operator-qr", action="store_true", help="Open generated operator QR PNG.")
+    parser.add_argument("--open-operator-browser", action="store_true", help="Open operator UI on this computer.")
     parser.add_argument(
         "--holyrics-url",
         default=default_holyrics_url(),
@@ -558,22 +633,24 @@ def main() -> int:
                 "bible": str(args.bible),
                 "open_vocabulary": args.open_vocabulary,
                 "slide_output": args.slide_output,
+                "require_approval": args.require_approval,
                 "holyrics_target": describe_holyrics_target(args),
                 "grammar": None if grammar is None else grammar_diagnostics(grammar),
             }
         )
+        start_slide_server_if_needed(args)
         payload = parsed_payload_from_candidates(
             [" ".join(args.text)],
             bible_path=args.bible,
             show_candidates=args.show_candidates,
         )
-        payload["holyrics"] = publish_holyrics_if_needed(args, payload)
+        payload["output"] = publish_payload(args, payload)
         logger.write(
             "text_probe",
             {
                 "candidate_texts": [" ".join(args.text)],
                 "payload": payload_summary(payload),
-                "holyrics": payload["holyrics"],
+                "output": payload["output"],
             },
         )
         if logger.run_dir:

@@ -15,4 +15,4 @@ $pip = Join-Path $PSScriptRoot ".venv\Scripts\pip.exe"
 & $pip install -e .
 
 Write-Host ""
-Write-Host "Готово. Модель Vosk должна лежать в models\vosk-model-small-ru-0.22"
+Write-Host "Готово. Запускайте run-liverse.cmd или .venv\Scripts\liverse.exe"

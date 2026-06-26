@@ -11,7 +11,7 @@ PY := $(BIN_DIR)/python
 PIP := $(BIN_DIR)/pip
 endif
 
-.PHONY: install liverse analyze clean
+.PHONY: install liverse analyze slides clean
 
 install:
 	$(PYTHON) -m venv $(VENV)
@@ -31,6 +31,13 @@ analyze:
 		"$(PY)" tools/analyze_vosk_probe_logs.py $(ARGS); \
 	else \
 		$(PYTHON) tools/analyze_vosk_probe_logs.py $(ARGS); \
+	fi
+
+slides:
+	@if [ -x "$(PY)" ]; then \
+		"$(PY)" tools/slide_server.py $(ARGS); \
+	else \
+		$(PYTHON) tools/slide_server.py $(ARGS); \
 	fi
 
 clean:

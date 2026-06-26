@@ -1,0 +1,32 @@
+:root { color-scheme: dark; font-family: system-ui, sans-serif; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; background: #0c1117; color: #f3f6f9; }
+main { width: min(100%, 720px); margin: 0 auto; padding: 18px; }
+header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+header img { width: 72px; height: 72px; padding: 5px; background: white; border-radius: 8px; }
+.brand { font-size: 28px; font-weight: 800; color: #f1c66d; }
+#connection { color: #91a0af; margin-top: 4px; }
+.card { background: #171f29; border: 1px solid #2b3847; border-radius: 18px; padding: 22px; box-shadow: 0 14px 40px #0005; margin-bottom: 18px; }
+.pipeline-stage { margin-top: 10px; font-size: 25px; font-weight: 750; color: #f5ce7c; }
+.pipeline progress { width: 100%; height: 14px; margin-top: 14px; accent-color: #d9a83d; }
+.pipeline #pipelineMessage { margin-bottom: 0; color: #c8d2dc; }
+.manual-hint { padding: 12px; border-radius: 10px; background: #7a4b18; color: #fff1d1; }
+.waiting { text-align: center; padding-block: 60px; }
+.hidden { display: none; }
+.caption { color: #8fa2b5; text-transform: uppercase; letter-spacing: .08em; font-size: 13px; }
+h1 { margin: 10px 0 16px; font-size: clamp(32px, 9vw, 54px); color: #f5ce7c; }
+#verse { font-family: Georgia, serif; font-size: clamp(21px, 5.5vw, 30px); line-height: 1.35; }
+details { margin-top: 22px; color: #b8c4cf; }
+.actions { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; margin-top: 28px; }
+button { min-height: 68px; border: 0; border-radius: 14px; font-size: 21px; font-weight: 750; color: white; }
+.approve { background: #148447; }
+.reject { background: #9b3030; }
+button:disabled { opacity: .5; }
+#status { min-height: 24px; margin-top: 14px; text-align: center; color: #c8d2dc; }
+.manual label { display: block; margin: 12px 0 7px; color: #c5d0da; }
+.manual.attention { border-color: #d9a83d; box-shadow: 0 0 0 2px #d9a83d55, 0 14px 40px #0005; }
+.manual input { width: 100%; min-height: 58px; border: 1px solid #4a5c6e; border-radius: 12px; padding: 0 15px; background: #0e151d; color: white; font-size: 20px; }
+.manual-apply { width: 100%; min-height: 58px; margin-top: 12px; background: #315e9b; }
+.suggestions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 9px; }
+.book-suggestion { min-height: 42px; padding: 8px 12px; background: #283849; font-size: 16px; font-weight: 600; }
+#manualStatus { min-height: 24px; margin-top: 12px; color: #c8d2dc; }

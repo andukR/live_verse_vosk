@@ -7,11 +7,13 @@ requires-python = ">=3.10"
 dependencies = [
   "sounddevice",
   "vosk",
+  "qrcode[pil]",
 ]
 
 [project.scripts]
 liverse = "tools.vosk_grammar_probe:main"
 liverse-analyze = "tools.analyze_vosk_probe_logs:main"
+liverse-slide-server = "tools.slide_server:main"
 
 [build-system]
 requires = ["setuptools>=68"]

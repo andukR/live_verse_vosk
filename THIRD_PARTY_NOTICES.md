@@ -41,7 +41,12 @@ correction procedure and provenance records.
 The previously used gist and archived JSON files are not sources of the
 published runtime Bible data.
 
+## Web slide background
+
+`slide_display/assets/sanctuary-bg.jpg` was generated for LiVerse with Codex
+image generation and was not copied from an external image library.
+
 ## Excluded old runtime data
 
 This standalone Vosk edition does not include the old LiVerse Whisper NER
-model, sermon transcripts, annotation datasets, or web slide background.
+model, sermon transcripts, or annotation datasets.

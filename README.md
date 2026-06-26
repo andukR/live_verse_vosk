@@ -33,6 +33,32 @@ python3 tools/vosk_grammar_probe.py --text "неемия первая глава
 python3 tools/vosk_grammar_probe.py
 ```
 
+Для живого богослужения с подтверждением на телефоне:
+
+```bash
+python3 tools/vosk_grammar_probe.py --require-approval --slide-output both --open-operator-browser
+```
+
+При запуске будет напечатан адрес пульта подтверждения для телефона и адрес
+большого web-экрана. Найденная ссылка попадёт в Holyrics только после кнопки
+`Принять`.
+
+Если нужен только Holyrics без локального web-экрана:
+
+```bash
+python3 tools/vosk_grammar_probe.py --require-approval
+```
+
+Отдельно запустить только web-экран:
+
+```bash
+python3 tools/slide_server.py --host 0.0.0.0 --port 8765
+```
+
+Большой экран: `http://127.0.0.1:8765/`
+
+Пульт подтверждения: `http://127.0.0.1:8765/operator`
+
 Чтобы вместе с JSONL-логом сохранить аудио последнего запуска:
 
 ```bash
@@ -64,6 +90,12 @@ python3 tools/vosk_grammar_probe.py --log-audio
 ```bash
 ./install-linux.sh
 make liverse
+```
+
+Запуск с подтверждением:
+
+```bash
+make liverse ARGS="--require-approval --slide-output both --open-operator-browser"
 ```
 
 После установки можно запускать и напрямую:

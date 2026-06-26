@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Библейская цитата</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app">
+    <section class="slide" aria-label="Слайд с библейской цитатой">
+      <div class="slide__shade"></div>
+      <article class="verse">
+        <div class="verse__ref" id="refText">Иоанна 20:24-29</div>
+        <div class="verse__rule"></div>
+        <p class="verse__text" id="verseText">
+          Иисус говорит ему: ты поверил, потому что увидел Меня;
+          блаженны невидевшие и уверовавшие.
+        </p>
+      </article>
+    </section>
+
+    <aside class="controls" aria-label="Управление слайдом">
+      <label>
+        <span>Код цитаты</span>
+        <input id="refInput" value="Иоанна 20:24-29">
+      </label>
+      <label>
+        <span>Текст цитаты</span>
+        <textarea id="verseInput" rows="7">Иисус говорит ему: ты поверил, потому что увидел Меня; блаженны невидевшие и уверовавшие.</textarea>
+      </label>
+      <div class="buttons">
+        <button id="applyButton" type="button">Показать</button>
+        <button id="fullscreenButton" type="button">На весь экран</button>
+      </div>
+      <div class="status" id="statusText">Ожидание live-событий</div>
+    </aside>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

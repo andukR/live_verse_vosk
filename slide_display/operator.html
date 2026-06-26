@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>LiVerse — подтверждение</title>
+  <link rel="stylesheet" href="operator.css">
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <div class="brand">LiVerse</div>
+        <div id="connection">Подключение…</div>
+      </div>
+      <img src="/operator-qr.svg" alt="QR-код пульта">
+    </header>
+
+    <section id="pipeline" class="card pipeline">
+      <div class="caption">Состояние распознавания</div>
+      <div id="pipelineStage" class="pipeline-stage">Слушаю</div>
+      <progress id="pipelineProgress" max="100" value="0"></progress>
+      <p id="pipelineMessage">LiVerse слушает речь</p>
+      <p id="manualHint" class="manual-hint hidden">
+        Ссылка не найдена. Введите ниже книгу, главу и стих, которые услышал оператор.
+      </p>
+    </section>
+
+    <section id="waiting" class="card waiting">
+      <h1>Ожидание цитаты</h1>
+      <p>LiVerse продолжает слушать проповедь.</p>
+    </section>
+
+    <section id="candidate" class="card hidden">
+      <div class="caption">Распознана цитата</div>
+      <h1 id="ref"></h1>
+      <p id="verse"></p>
+      <details>
+        <summary>Распознанная речь</summary>
+        <p id="asr"></p>
+      </details>
+      <div class="actions">
+        <button id="approve" class="approve">Принять</button>
+        <button id="reject" class="reject">Отклонить</button>
+      </div>
+      <div id="status"></div>
+    </section>
+
+    <section id="manualCard" class="card manual">
+      <div class="caption">Ручная вставка или замена</div>
+      <label for="manualRef">Код цитаты</label>
+      <input
+        id="manualRef"
+        list="bookNames"
+        autocomplete="off"
+        placeholder="Начните вводить: Иоанн 3:16"
+      >
+      <datalist id="bookNames"></datalist>
+      <div id="bookSuggestions" class="suggestions"></div>
+      <button id="manualApply" class="manual-apply">Подставить цитату</button>
+      <div id="manualStatus"></div>
+    </section>
+  </main>
+  <script src="operator.js"></script>
+</body>
+</html>
