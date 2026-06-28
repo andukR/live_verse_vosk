@@ -99,10 +99,13 @@ LiVerse больше не отправляет собственный текст
 `ShowQuickPresentation` для распознанных библейских ссылок. Вместо этого он:
 
 1. вычисляет Holyrics verse id в формате `BBCCCVVV`;
-2. вызывает `SetBibleSettings` с `{"show_x_verses": 1}`;
+2. вызывает `SetBibleSettings` с `show_x_verses`: `1` для одного стиха или
+   количеством стихов для диапазона;
 3. вызывает `ShowVerse` с `{"id": "<verse_id>"}`.
 
 Например, `Иоанн 3:16` превращается в `43003016`.
+`Иоанн 3:16-19` отправляется как `SetBibleSettings {"show_x_verses": 4}`,
+затем `ShowVerse {"id": "43003016"}`.
 
 ## Установка на Windows 10
 

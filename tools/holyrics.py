@@ -200,6 +200,21 @@ def holyrics_verse_id(payload: dict) -> tuple[str | None, str]:
     return f"{book_number:02d}{chapter:03d}{verse:03d}", ""
 
 
+def holyrics_show_verse_count(payload: dict) -> int:
+    try:
+        chapter = int(payload.get("chapter") or 0)
+        start_verse = int(payload.get("start_verse") or 0)
+        end_verse = int(payload.get("end_verse") or start_verse)
+        end_chapter = payload.get("end_chapter")
+        end_chapter = int(end_chapter) if end_chapter is not None else chapter
+    except (TypeError, ValueError):
+        return 1
+
+    if chapter != end_chapter or start_verse <= 0 or end_verse < start_verse:
+        return 1
+    return max(1, end_verse - start_verse + 1)
+
+
 def slide_payload_to_holyrics_text(payload: dict) -> str:
     ref = str(payload.get("ref") or "").strip()
     verse = str(payload.get("verse") or "").strip()
@@ -278,12 +293,14 @@ def post_holyrics_url(args: Any, base_url: str, payload: dict) -> tuple[bool, st
 
     holyrics_log(f"recognized_ref={ref or '(empty)'}")
     holyrics_log(f"verse_id={verse_id}")
+    show_x_verses = holyrics_show_verse_count(payload)
+    holyrics_log(f"show_x_verses={show_x_verses}")
 
     settings_ok, settings_reason, settings_body = post_holyrics_api(
         args,
         base_url,
         "SetBibleSettings",
-        {"show_x_verses": 1},
+        {"show_x_verses": show_x_verses},
     )
     holyrics_log(f"SetBibleSettings response={settings_body or settings_reason or 'ok'}")
     if not settings_ok:
@@ -298,7 +315,7 @@ def post_holyrics_url(args: Any, base_url: str, payload: dict) -> tuple[bool, st
     holyrics_log(f"ShowVerse response={show_body or show_reason or 'ok'}")
     if not show_ok:
         return False, show_reason
-    return True, f"verse_id:{verse_id}"
+    return True, f"verse_id:{verse_id};show_x_verses:{show_x_verses}"
 
 
 def post_holyrics_update(args: Any, payload: dict) -> tuple[bool, str]:
